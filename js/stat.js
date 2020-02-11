@@ -29,39 +29,39 @@ var renderClouds = function (ctx) {
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#ffffff');
 };
 
-var maxTimes = function (arr) {
+var calcMaxTimes = function (arr) {
   return Math.max.apply(null, arr);
 };
 
-var randomIntensity = function getRandomIntInclusive(min, max) {
+var calcRandomIntensity = function getRandomIntInclusive(min, max) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-var randomBlueColors = function () {
-  return 'hsl(240, ' + randomIntensity(1, 100) + '%' + ', 50%)';
+var getRandomBlueColors = function () {
+  return 'hsl(240, ' + calcRandomIntensity(1, 100) + '%' + ', 50%)';
 };
 
-var playersColors = function (names, index) {
+var getPlayersColors = function (names, index) {
   if (names[index] === PLAYER_NAME) {
     return 'rgba(255, 0, 0, 1)';
   } else {
-    return randomBlueColors();
+    return getRandomBlueColors();
   }
 };
 
-var columns = function (ctx, names, times, index) {
-  var barTopPadding = barHeight * times[index] / maxTimes(times);
+var renderColumn = function (ctx, names, times, index) {
+  var barTopPadding = barHeight * times[index] / calcMaxTimes(times);
 
   ctx.fillStyle = FONT_COLOR;
   ctx.fillText(Math.round(times[index]), TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT - GAP * 2 - CLOUD_Y - barTopPadding);
   ctx.fillText(names[index], TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT);
-  ctx.fillStyle = playersColors(names, index);
+  ctx.fillStyle = getPlayersColors(names, index);
   ctx.fillRect(TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT - CLOUD_Y - GAP - barTopPadding, BAR_WIDTH, barTopPadding);
 };
 
-var renderColumn = function (ctx, names, times) {
+var renderColumns = function (ctx, names, times) {
   for (var i = 0; i < names.length; i++) {
-    columns(ctx, names, times, i);
+    renderColumn(ctx, names, times, i);
   }
 };
 
@@ -78,7 +78,7 @@ var renderFont = function (ctx) {
 window.renderStatistics = function (ctx, names, times) {
   renderClouds(ctx);
 
-  renderColumn(ctx, names, times);
+  renderColumns(ctx, names, times);
 
   renderFont(ctx);
 };
