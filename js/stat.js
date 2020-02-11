@@ -24,41 +24,44 @@ var renderCloud = function (ctx, x, y, color) {
   ctx.fillRect(x, y, CLOUD_WIDTH, CLOUD_HEIGHT);
 };
 
-var cloud = function (ctx) {
+var renderClouds = function (ctx) {
   renderCloud(ctx, CLOUD_X + GAP, CLOUD_Y + GAP, shadowColor);
   renderCloud(ctx, CLOUD_X, CLOUD_Y, '#ffffff');
 };
 
-var maxTime = function (arr) {
+var maxTimes = function (arr) {
   return Math.max.apply(null, arr);
 };
 
-var randomBlue = function (names, index) {
+var randomIntensity = function getRandomIntInclusive(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
+
+var randomBlueColors = function () {
+  return 'hsl(240, ' + randomIntensity(1, 100) + '%' + ', 50%)';
+};
+
+var playersColors = function (names, index) {
   if (names[index] === PLAYER_NAME) {
     return 'rgba(255, 0, 0, 1)';
   } else {
-    var randomIntensity = function getRandomIntInclusive(min, max) {
-      min = Math.ceil(1);
-      max = Math.floor(100);
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    };
-    return 'hsl(240, ' + randomIntensity() + '%' + ', 50%)';
+    return randomBlueColors();
   }
 };
 
-var column = function (ctx, names, times, index) {
-  var barTopPadding = barHeight * times[index] / maxTime(times);
+var columns = function (ctx, names, times, index) {
+  var barTopPadding = barHeight * times[index] / maxTimes(times);
 
   ctx.fillStyle = FONT_COLOR;
   ctx.fillText(Math.round(times[index]), TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT - GAP * 2 - CLOUD_Y - barTopPadding);
   ctx.fillText(names[index], TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT);
-  ctx.fillStyle = randomBlue(names, index);
+  ctx.fillStyle = playersColors(names, index);
   ctx.fillRect(TEXT_WIDTH + FONT_GAP + FONT_GAP * index, TEXT_HEIGHT - CLOUD_Y - GAP - barTopPadding, BAR_WIDTH, barTopPadding);
 };
 
 var renderColumn = function (ctx, names, times) {
   for (var i = 0; i < names.length; i++) {
-    column(ctx, names, times, i);
+    columns(ctx, names, times, i);
   }
 };
 
@@ -73,9 +76,9 @@ var renderFont = function (ctx) {
 };
 
 window.renderStatistics = function (ctx, names, times) {
-  cloud(ctx);
-
-  renderFont(ctx);
+  renderClouds(ctx);
 
   renderColumn(ctx, names, times);
+
+  renderFont(ctx);
 };
